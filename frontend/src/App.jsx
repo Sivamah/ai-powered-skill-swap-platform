@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate, Navigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import Login from './components/Login'
 import Register from './components/Register'
@@ -8,35 +8,28 @@ import MySessions from './pages/MySessions'
 import SessionRoom from './pages/SessionRoom'
 import Settings from './pages/Settings'
 
-import Presentation from './pages/Presentation'
-
 function App() {
     const [token, setToken] = useState(localStorage.getItem('token'))
     const navigate = useNavigate()
+    const location = useLocation()
 
     useEffect(() => {
-        const path = window.location.pathname
+        const path = location.pathname
         if (token) {
             if (path === '/login' || path === '/register') {
                 navigate('/')
             }
         } else {
-            // Allow access to presentation without login
-            if (path !== '/register' && path !== '/presentation') {
+            if (path !== '/register') {
                 navigate('/login')
             }
         }
-    }, [token, window.location.pathname])
+    }, [token, location.pathname, navigate])
 
     const logout = () => {
         localStorage.removeItem('token')
         setToken(null)
         navigate('/login')
-    }
-
-    // Special verification for Full Screen Presentation Mode to avoid layout wrapper
-    if (window.location.pathname === '/presentation') {
-        return <Presentation />
     }
 
     return (
@@ -67,7 +60,6 @@ function App() {
                 <Routes>
                     <Route path="/login" element={<Login setToken={setToken} />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/presentation" element={<Presentation />} />
                     <Route path="/" element={<Dashboard token={token} />} />
                     <Route path="/find-tutor" element={<FindTutor token={token} />} />
                     <Route path="/my-sessions" element={<MySessions token={token} />} />

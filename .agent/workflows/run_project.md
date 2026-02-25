@@ -7,13 +7,17 @@ description: How to start and stop the Skill Swap AI project
 ## Prerequisites
 - Node.js installed
 - Python installed with dependencies (`pip install -r backend/requirements.txt`)
+- **Microsoft OpenJDK 21** installed for Java execution support
+  - Install via: `winget install Microsoft.OpenJDK.21 --accept-package-agreements --accept-source-agreements`
+  - Or download from: https://www.microsoft.com/openjdk
 
 ## Start Servers
 You need two separate terminals.
 
-1.  **Backend (FastAPI)**
+1.  **Backend (FastAPI)** — refresh PATH first so uvicorn sees the JDK:
     ```powershell
     cd "d:\AI POWERED\backend"
+    $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User")
     uvicorn main:app --reload
     ```
 

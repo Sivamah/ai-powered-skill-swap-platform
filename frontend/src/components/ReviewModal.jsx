@@ -1,13 +1,39 @@
 import { useState } from 'react'
+import axios from 'axios'
 
-export default function ReviewModal({ isOpen, onClose, onSubmit }) {
+export default function ReviewModal({ isOpen, onClose, sessionId, onSuccess, token }) {
     const [rating, setRating] = useState(5)
     const [comment, setComment] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
+
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
 
     if (!isOpen) return null
 
-    const handleSubmit = () => {
-        onSubmit(rating, comment)
+    const handleSubmit = async () => {
+        if (!sessionId) {
+            setError('Session ID is missing.')
+            return
+        }
+        setLoading(true)
+        setError('')
+        try {
+            await axios.post(`${API_URL}/reviews`, {
+                session_id: sessionId,
+                rating: rating,
+                comment: comment
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            setRating(5)
+            setComment('')
+            onSuccess()
+        } catch (err) {
+            setError(err.response?.data?.detail || 'Failed to submit review. Please try again.')
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -47,11 +73,18 @@ export default function ReviewModal({ isOpen, onClose, onSubmit }) {
                     />
                 </div>
 
+                {error && (
+                    <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                        {error}
+                    </div>
+                )}
+
                 <button
                     onClick={handleSubmit}
-                    className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/20"
+                    disabled={loading}
+                    className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    Submit Review
+                    {loading ? 'Submitting...' : 'Submit Review'}
                 </button>
             </div>
         </div>

@@ -8,6 +8,41 @@
   --bg-dark: #030014;
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-highlight: rgba(255, 255, 255, 0.15);
+
+  /* Login Page - Fun & Energetic - VIOLET + PINK + ELECTRIC BLUE */
+  --login-primary: #8B5CF6;
+  --login-secondary: #EC4899;
+  --login-accent: #3B82F6;
+
+  /* Register Page - Warm & Growth-Oriented - TEAL + GREEN + SOFT ORANGE */
+  --register-primary: #14B8A6;
+  --register-secondary: #10B981;
+  --register-accent: #FB923C;
+
+  /* Dashboard - Calm & Premium - DEEP PURPLE + INDIGO + MIDNIGHT BLUE */
+  --dashboard-primary: #6366F1;
+  --dashboard-secondary: #4F46E5;
+  --dashboard-accent: #1E3A8A;
+
+  /* Find Mentor - Social & Energetic - CYAN + CORAL + LIME */
+  --mentor-primary: #06B6D4;
+  --mentor-secondary: #F87171;
+  --mentor-accent: #84CC16;
+
+  /* My Sessions - Journey & Progress - AMBER + SLATE + EMERALD */
+  --sessions-primary: #F59E0B;
+  --sessions-secondary: #64748B;
+  --sessions-accent: #059669;
+
+  /* Settings - Minimal & Elegant - WARM GRAY + BEIGE + SOFT GOLD */
+  --settings-primary: #78716C;
+  --settings-secondary: #D6D3D1;
+  --settings-accent: #FBBF24;
+
+  /* Verification Modal - Focused & Goal-Oriented - CRIMSON + NAVY + WHITE */
+  --verify-primary: #DC2626;
+  --verify-secondary: #1E3A8A;
+  --verify-accent: #FFFFFF;
 }
 
 @layer base {
@@ -33,7 +68,9 @@
 
 @layer components {
 
-  /* Premium Glass Card */
+  /* ======================
+     GENERIC GLASS CARDS
+     ====================== */
   .glass-card {
     @apply relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-md transition-all duration-300;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -60,7 +97,79 @@
     @apply opacity-100;
   }
 
-  /* Buttons */
+  /* ======================
+     MODULE-SPECIFIC CARDS
+     ====================== */
+
+  /* Dashboard Cards - Indigo/Purple theme */
+  .dashboard-card {
+    @apply relative overflow-hidden rounded-2xl border bg-white/[0.02] backdrop-blur-md transition-all duration-300;
+    border-color: rgba(99, 102, 241, 0.15);
+    box-shadow: 0 4px 30px rgba(99, 102, 241, 0.08);
+  }
+
+  .dashboard-card:hover {
+    @apply border-indigo-400/30 transform -translate-y-1;
+    box-shadow: 0 8px 40px rgba(99, 102, 241, 0.15);
+  }
+
+  /* Find Mentor Cards - Cyan/Lime theme */
+  .mentor-card {
+    @apply relative overflow-hidden rounded-2xl border bg-white/[0.02] backdrop-blur-md transition-all duration-500;
+    border-color: rgba(6, 182, 212, 0.2);
+    box-shadow: 0 4px 30px rgba(6, 182, 212, 0.1);
+  }
+
+  .mentor-card:hover {
+    @apply border-cyan-400/40 transform -translate-y-2 scale-[1.02];
+    box-shadow: 0 12px 50px rgba(6, 182, 212, 0.25), 0 0 60px rgba(132, 204, 22, 0.15);
+  }
+
+  .mentor-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-lime-500/5 opacity-0 transition-opacity duration-500 pointer-events-none;
+  }
+
+  .mentor-card:hover::before {
+    @apply opacity-100;
+  }
+
+  /* My Sessions Cards - Amber/Emerald theme */
+  .sessions-card {
+    @apply relative overflow-hidden rounded-2xl border bg-white/[0.02] backdrop-blur-md transition-all duration-300;
+    border-color: rgba(245, 158, 11, 0.15);
+    box-shadow: 0 4px 30px rgba(245, 158, 11, 0.08);
+  }
+
+  .sessions-card:hover {
+    @apply border-amber-400/30 transform -translate-y-1;
+    box-shadow: 0 8px 40px rgba(245, 158, 11, 0.15);
+  }
+
+  /* Settings Cards - Beige/Gold theme */
+  .settings-card {
+    @apply relative overflow-hidden rounded-2xl border bg-white/[0.02] backdrop-blur-md transition-all duration-300;
+    border-color: rgba(251, 191, 36, 0.10);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .settings-card:hover {
+    @apply border-amber-500/20;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Verification Modal Cards - Crimson/Navy theme */
+  .verify-card {
+    @apply relative overflow-hidden rounded-2xl border bg-white/[0.02] backdrop-blur-md transition-all duration-300;
+    border-color: rgba(220, 38, 38, 0.20);
+    box-shadow: 0 4px 30px rgba(220, 38, 38, 0.12);
+  }
+
+  /* ======================
+     BUTTONS
+     ====================== */
+
+  /* Generic Primary Button */
   .btn-primary {
     @apply relative overflow-hidden px-6 py-3.5 rounded-xl font-bold text-white transition-all duration-300 shadow-lg shadow-indigo-500/30 tracking-wide;
     background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
@@ -75,11 +184,73 @@
     @apply transform translate-y-0;
   }
 
+  /* Dashboard Button - Indigo/Purple */
+  .btn-dashboard {
+    @apply relative overflow-hidden px-6 py-3.5 rounded-xl font-bold text-white transition-all duration-300 tracking-wide;
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  }
+
+  .btn-dashboard:hover {
+    box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
+    @apply transform -translate-y-0.5;
+  }
+
+  /* Find Mentor Button - Cyan/Lime */
+  .btn-mentor {
+    @apply relative overflow-hidden px-6 py-3.5 rounded-xl font-bold text-white transition-all duration-300 tracking-wide;
+    background: linear-gradient(135deg, #06B6D4 0%, #84CC16 100%);
+    box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);
+  }
+
+  .btn-mentor:hover {
+    box-shadow: 0 6px 30px rgba(6, 182, 212, 0.5);
+    @apply transform -translate-y-0.5;
+  }
+
+  /* My Sessions Button - Amber/Emerald */
+  .btn-sessions {
+    @apply relative overflow-hidden px-6 py-3.5 rounded-xl font-bold text-white transition-all duration-300 tracking-wide;
+    background: linear-gradient(135deg, #F59E0B 0%, #059669 100%);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+  }
+
+  .btn-sessions:hover {
+    box-shadow: 0 6px 30px rgba(245, 158, 11, 0.5);
+    @apply transform -translate-y-0.5;
+  }
+
+  /* Settings Button - Gold */
+  .btn-settings {
+    @apply relative overflow-hidden px-6 py-3.5 rounded-xl font-bold text-white transition-all duration-300 tracking-wide;
+    background: linear-gradient(135deg, #D97706 0%, #FBBF24 100%);
+    box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
+  }
+
+  .btn-settings:hover {
+    box-shadow: 0 6px 30px rgba(251, 191, 36, 0.5);
+    @apply transform -translate-y-0.5;
+  }
+
+  /* Verification Button - Crimson */
+  .btn-verify {
+    @apply relative overflow-hidden px-6 py-3.5 rounded-xl font-bold text-white transition-all duration-300 tracking-wide;
+    background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+  }
+
+  .btn-verify:hover {
+    box-shadow: 0 6px 30px rgba(220, 38, 38, 0.6);
+    @apply transform -translate-y-0.5;
+  }
+
   .btn-ghost {
     @apply px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all font-medium;
   }
 
-  /* Inputs */
+  /* ======================
+     INPUTS
+     ====================== */
   .input-field {
     @apply w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-300;
   }
@@ -88,13 +259,35 @@
     @apply border-indigo-500/50 bg-black/30 shadow-lg shadow-indigo-500/20;
   }
 
-  /* Text Gradients */
+  /* ======================
+     TEXT GRADIENTS
+     ====================== */
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400;
   }
 
   .text-gradient-purple {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-indigo-400 to-purple-400;
+  }
+
+  .text-gradient-dashboard {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-400;
+  }
+
+  .text-gradient-mentor {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-lime-300 to-cyan-400;
+  }
+
+  .text-gradient-sessions {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-slate-200 to-emerald-200;
+  }
+
+  .text-gradient-settings {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-stone-200 via-amber-100 to-stone-200;
+  }
+
+  .text-gradient-verify {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-red-300 via-red-200 to-red-300;
   }
 }
 
@@ -192,6 +385,93 @@
   animation: fade-in-right 0.8s ease-out forwards;
 }
 
+/* Module-Specific Animations */
+
+/* Login - Bounce & Float */
+@keyframes bounce-float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-float {
+  animation: bounce-float 3s ease-in-out infinite;
+}
+
+/* Register - Grow & Pulse */
+@keyframes grow-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.animate-grow-pulse {
+  animation: grow-pulse 2s ease-in-out infinite;
+}
+
+/* Find Mentor - Hover Flip */
+@keyframes hover-flip {
+  0% {
+    transform: rotateY(0deg);
+  }
+
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.animate-hover-flip:hover {
+  animation: hover-flip 0.6s ease-in-out;
+}
+
+/* My Sessions - Progress Slide */
+@keyframes progress-slide {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-progress-slide {
+  animation: progress-slide 0.8s ease-out forwards;
+}
+
+/* Verification Modal - Step Motion */
+@keyframes step-motion {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-step-motion {
+  animation: step-motion 0.4s ease-out forwards;
+}
+
 /* Light Theme Inputs */
 .input-field-light {
   @apply w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 outline-none transition-all duration-300;
@@ -212,4 +492,137 @@
 
 .glass-input:focus {
   @apply border-indigo-500/50 bg-white/[0.08] shadow-lg shadow-indigo-500/20 ring-1 ring-indigo-500/30;
+}
+
+/* Deep Ocean Floating Animations */
+@keyframes float-slow {
+
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+
+  50% {
+    transform: translateY(-20px) translateX(10px);
+  }
+}
+
+@keyframes float-slower {
+
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+
+  50% {
+    transform: translateY(-30px) translateX(-15px);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-float-slower {
+  animation: float-slower 12s ease-in-out infinite;
+}
+
+/* 
+  ===========================================
+  PREMIUM FULL SCREEN GRADIENT ANIMATIONS 
+  ===========================================
+*/
+
+/* MESH GRADIENT (LOGIN) */
+@keyframes mesh-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-mesh-gradient {
+  background-size: 400% 400%;
+  animation: mesh-gradient 15s ease infinite;
+}
+
+/* AURORA GRADIENT (REGISTER) */
+@keyframes aurora-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-aurora-gradient {
+  background-size: 300% 300%;
+  animation: aurora-gradient 20s ease-in-out infinite;
+}
+
+/* FLOATING ORBS */
+@keyframes orb-float {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  33% {
+    transform: translateY(-30px) scale(1.1);
+  }
+
+  66% {
+    transform: translateY(20px) scale(0.9);
+  }
+}
+
+.animate-orb-float {
+  animation: orb-float 10s ease-in-out infinite;
+}
+
+@keyframes orb-float-delayed {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(40px) scale(1.2);
+  }
+}
+
+.animate-orb-float-delayed {
+  animation: orb-float-delayed 14s ease-in-out infinite;
+}
+
+/* GLASS PANEL HOVER */
+@keyframes panel-hover {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-panel-hover {
+  animation: panel-hover 6s ease-in-out infinite;
 }

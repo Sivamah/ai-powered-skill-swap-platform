@@ -23,7 +23,8 @@ def run_migrations():
             "bio": "TEXT",
             "github_url": "TEXT",
             "linkedin_url": "TEXT",
-            "education": "TEXT"
+            "education": "TEXT",
+            "verification_scores": "TEXT"
         }
         
         for col_name, col_type in new_columns.items():

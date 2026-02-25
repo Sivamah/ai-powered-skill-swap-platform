@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import ReviewModal from "../components/ReviewModal";
@@ -10,7 +10,7 @@ export default function MySessions({ token }) {
 
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
 
-    const fetchSessions = () => {
+    const fetchSessions = useCallback(() => {
         axios.get(`${API_URL}/my_sessions`, {
             headers: { Authorization: `Bearer ${token}` }
         })
@@ -22,11 +22,11 @@ export default function MySessions({ token }) {
                 console.error(err);
                 setLoading(false);
             });
-    }
+    }, [token, API_URL])
 
     useEffect(() => {
         fetchSessions();
-    }, [token]);
+    }, [fetchSessions]);
 
     const handleAccept = (sessionId) => {
         axios.post(`${API_URL}/confirm_session/${sessionId}`, null, {
@@ -75,13 +75,25 @@ export default function MySessions({ token }) {
     return (
         <div className="max-w-5xl mx-auto px-4 py-8 space-y-12">
 
-            {/* Background Decor */}
+            {/* My Sessions Background - Amber + Slate + Emerald */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-                <div className="absolute top-[20%] right-[10%] w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[100px] animate-pulse-slow"></div>
+                {/* Roadmap / Path-Inspired Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-amber-900/30 via-transparent to-emerald-900/20"></div>
+
+                {/* Progress Path Visualization */}
+                <div className="absolute left-[10%] top-[20%] w-1 h-[60%] bg-gradient-to-b from-amber-500/30 via-slate-500/20 to-emerald-500/30 blur-sm"></div>
+                <div className="absolute top-[20%] left-[10%] w-16 h-16 bg-amber-500/10 rounded-full blur-2xl animate-progress-slide"></div>
+                <div className="absolute top-[50%] left-[10%] w-20 h-20 bg-slate-400/10 rounded-full blur-2xl animate-progress-slide" style={{ animationDelay: '0.3s' }}></div>
+                <div className="absolute bottom-[20%] left-[10%] w-24 h-24 bg-emerald-500/10 rounded-full blur-3xl animate-progress-slide" style={{ animationDelay: '0.6s' }}></div>
+
+                {/* Ambient Circles */}
+                <div className="absolute top-[30%] right-[20%] w-96 h-96 bg-amber-600/5 rounded-full blur-[100px]"></div>
+                <div className="absolute bottom-[25%] right-[15%] w-80 h-80 bg-emerald-600/8 rounded-full blur-[100px]"></div>
             </div>
 
             <header className="animate-slide-up">
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">My Sessions</h1>
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 text-gradient-sessions">My Sessions</h1>
                 <p className="text-slate-400 font-light">Manage your learning journey and upcoming collaborations.</p>
             </header>
 
@@ -101,7 +113,7 @@ export default function MySessions({ token }) {
                         {upcoming.length > 0 ? (
                             <div className="space-y-4">
                                 {upcoming.map((s) => (
-                                    <div key={s.id} className="glass-card p-6 border-l-4 border-l-emerald-500 hover:bg-white/[0.04]">
+                                    <div key={s.id} className="sessions-card p-6 border-l-4 border-l-emerald-500 hover:bg-white/[0.04]">
                                         <div className="flex justify-between items-start mb-4">
                                             <div>
                                                 <h3 className="text-xl font-bold text-white">{s.skill_name}</h3>
@@ -113,7 +125,7 @@ export default function MySessions({ token }) {
                                         </div>
 
                                         <div className="flex gap-3">
-                                            <a href={s.meet_link || "#"} target="_blank" rel="noreferrer" className="flex-1 btn-primary py-2 text-sm flex items-center justify-center gap-2">
+                                            <a href={s.meet_link || "#"} target="_blank" rel="noreferrer" className="flex-1 btn-sessions py-2 text-sm flex items-center justify-center gap-2">
                                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                                                 Launch
                                             </a>
@@ -151,7 +163,7 @@ export default function MySessions({ token }) {
                         {pending.length > 0 ? (
                             <div className="space-y-4">
                                 {pending.map((s) => (
-                                    <div key={s.id} className="glass-card p-6 relative overflow-hidden">
+                                    <div key={s.id} className="sessions-card p-6 relative overflow-hidden border-l-4 border-l-amber-500">
                                         <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/10 rounded-full blur-xl -mr-8 -mt-8"></div>
 
                                         <div className="flex justify-between items-center mb-4 relative z-10">
@@ -189,7 +201,7 @@ export default function MySessions({ token }) {
                         <h2 className="text-xl font-bold text-white">History</h2>
                     </div>
 
-                    <div className="glass-card overflow-hidden">
+                    <div className="sessions-card overflow-hidden">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-white/5 bg-white/[0.02]">
@@ -207,7 +219,7 @@ export default function MySessions({ token }) {
                                             <div className="text-[10px] text-slate-500 uppercase">{s.session_type}</div>
                                         </td>
                                         <td className="p-4 text-sm text-slate-400">{s.other_user_name}</td>
-                                        <td className="p-4 text-sm text-slate-500 font-mono">2023-10-24</td>
+                                        <td className="p-4 text-sm text-slate-500 font-mono">{s.end_time ? new Date(s.end_time).toLocaleDateString() : 'N/A'}</td>
                                         <td className="p-4 text-right">
                                             {!s.is_tutor && !s.review_status ? (
                                                 <button
@@ -236,6 +248,7 @@ export default function MySessions({ token }) {
             <ReviewModal
                 isOpen={reviewModal.open}
                 sessionId={reviewModal.sessionId}
+                token={token}
                 onClose={() => setReviewModal({ open: false, sessionId: null })}
                 onSuccess={handleReviewSuccess}
             />

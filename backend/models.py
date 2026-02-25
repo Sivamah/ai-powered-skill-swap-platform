@@ -12,6 +12,7 @@ class UserBase(SQLModel):
     verified_skills: str = Field(default="[]", description="JSON list of skills verified by quiz")
     badges: str = Field(default="{}", description="JSON dict of skill: level (Beginner/Intermediate/Expert)")
     feedback_summary: Optional[str] = Field(default=None, description="AI-generated summary of reviews")
+    verification_scores: Optional[str] = Field(default=None, description="JSON dict of skill: {score, method, date}")
     credits_balance: int = Field(default=5)
     reputation_score: float = Field(default=0.0)
     
@@ -39,6 +40,8 @@ class UserUpdate(SQLModel):
     github_url: Optional[str] = None
     linkedin_url: Optional[str] = None
     education: Optional[str] = None
+    skills_offered: Optional[str] = None
+    skills_wanted: Optional[str] = None
 
 class SessionBase(SQLModel):
     learner_id: int = Field(foreign_key="user.id")
