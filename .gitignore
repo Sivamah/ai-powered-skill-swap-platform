@@ -13,10 +13,25 @@ __pycache__/
 .Python
 env/
 venv/
-.env
 .venv
 pip-log.txt
 flask_session/
+
+# Environment variables (NEVER commit secrets)
+.env
+.env.local
+.env.production
+
+# SQLite Database files (contains user data — never commit)
+database.db
+database.db-shm
+database.db-wal
+backend/database.db
+backend/database.db-shm
+backend/database.db-wal
+
+# Misc files that shouldn't be in repo
+status.txt
 
 # OS
 .DS_Store

@@ -56,7 +56,7 @@ app = FastAPI(title="Skill Swap AI Platform", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:4173").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -616,7 +616,7 @@ async def execute_code(request: CodeExecutionRequest):
         
         # Execute code in a thread so the blocking Piston HTTP call
         # does not stall FastAPI's async event loop.
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         result = await loop.run_in_executor(
             None,
             lambda: code_executor.execute_code(
@@ -842,5 +842,5 @@ def get_certificate(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 

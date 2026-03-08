@@ -1,5 +1,6 @@
 import sqlite3
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -9,7 +10,8 @@ def run_migrations():
     Also creates the Certificate table if missing.
     This is a lightweight migration strategy for SQLite.
     """
-    db_path = "database.db"
+    # Use same path as database.py so migrations always target the correct file
+    db_path = os.getenv("DATABASE_PATH", "database.db")
     
     try:
         conn = sqlite3.connect(db_path)

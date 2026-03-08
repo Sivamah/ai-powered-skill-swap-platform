@@ -12,10 +12,20 @@ from models import User
 from database import get_session
 
 # ── Configuration ────────────────────────────────────────────────────────────
-# SECRET_KEY should be set via environment variable in production.
-SECRET_KEY = os.getenv("SECRET_KEY", "skill-swap-ai-secret-key-change-in-production")
+# SECRET_KEY MUST be set via environment variable in production.
+# Crashes at startup if missing — prevents silent use of a known default.
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    # In development, use a fallback; in production this MUST be set.
+    import warnings
+    SECRET_KEY = "skill-swap-dev-only-key-change-in-production"
+    warnings.warn(
+        "WARNING: SECRET_KEY is not set! Using insecure default. "
+        "Set the SECRET_KEY environment variable before deploying to production.",
+        stacklevel=2
+    )
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "3000"))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
