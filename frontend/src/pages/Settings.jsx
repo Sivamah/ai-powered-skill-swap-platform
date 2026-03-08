@@ -81,7 +81,7 @@ function Settings({ token }) {
 
             try {
                 // Classify Skill
-                const res = await axios.get(`${API_URL}/api/verify/classify-skill?skill=${skillToAdd}`);
+                const res = await axios.get(`${API_URL}/verify/classify-skill?skill=${skillToAdd}`);
                 const { type } = res.data;
 
                 setSelectedSkill(skillToAdd);

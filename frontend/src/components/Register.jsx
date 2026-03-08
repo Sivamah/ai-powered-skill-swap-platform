@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { API_URL } from '../services/api'
 
 /* ═══════════════════════════════════════════════════════════
    RIPPLE HOOK
@@ -85,7 +86,7 @@ export default function Register() {
         setLoading(true)
         try {
             const skillsArray = formData.skills.split(',').map(s => s.trim()).filter(Boolean)
-            await axios.post('/api/register', {
+            await axios.post(`${API_URL}/register`, {
                 password: formData.password,
                 email: formData.email,
                 name: formData.fullName,

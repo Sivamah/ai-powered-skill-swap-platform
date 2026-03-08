@@ -69,7 +69,7 @@ export default function Dashboard({ token }) {
   const handleVerifyClick = async (skill) => {
     setVerifyingSkill(skill);
     try {
-      const res = await axios.get(`${API_URL}/api/verify/classify-skill?skill=${skill}`);
+      const res = await axios.get(`${API_URL}/verify/classify-skill?skill=${skill}`);
       const { type } = res.data;
 
       setSelectedSkill(skill);

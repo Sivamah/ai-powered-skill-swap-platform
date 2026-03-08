@@ -33,7 +33,7 @@ const CodingVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) 
         setFetchError(null);
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
         try {
-            const res = await axios.get(`${API_URL}/api/verify/coding-problems?language=${skill.toLowerCase()}`, { headers });
+            const res = await axios.get(`${API_URL}/verify/coding-problems?language=${skill.toLowerCase()}`, { headers });
             if (res.data && Array.isArray(res.data) && res.data.length > 0) {
                 setProblems(res.data);
             } else {
@@ -109,7 +109,7 @@ const CodingVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) 
 
         try {
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
-            const res = await axios.post(`${API_URL}/api/verify/execute-code`, {
+            const res = await axios.post(`${API_URL}/verify/execute-code`, {
                 language: skill,
                 code: currentCode,
                 problem_id: currentProblem.id,
@@ -154,7 +154,7 @@ const CodingVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) 
 
         try {
             // Run against ALL test cases
-            const res = await axios.post(`${API_URL}/api/verify/execute-code`, {
+            const res = await axios.post(`${API_URL}/verify/execute-code`, {
                 language: skill,
                 code: currentCode,
                 problem_id: currentProblem.id,
@@ -210,7 +210,7 @@ const CodingVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) 
     const submitFinalVerification = async (results) => {
         try {
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
-            const res = await axios.post(`${API_URL}/api/verify/coding-submit`, {
+            const res = await axios.post(`${API_URL}/verify/coding-submit`, {
                 skill: skill,
                 language: skill,
                 problem_results: results

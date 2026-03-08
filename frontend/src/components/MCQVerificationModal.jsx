@@ -16,7 +16,7 @@ const MCQVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) => 
         setLoading(true);
         try {
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
-            const res = await axios.post(`${API_URL}/api/verify/mcq-questions`, {
+            const res = await axios.post(`${API_URL}/verify/mcq-questions`, {
                 skill: skill,
                 num_questions: 10
             }, { headers });
@@ -45,7 +45,7 @@ const MCQVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) => 
         setLoading(true);
         try {
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
-            const res = await axios.post(`${API_URL}/api/verify/mcq-submit`, {
+            const res = await axios.post(`${API_URL}/verify/mcq-submit`, {
                 skill: skill,
                 answers: answers,
                 questions: questions

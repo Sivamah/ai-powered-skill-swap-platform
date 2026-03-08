@@ -1,7 +1,7 @@
 from typing import List, Dict, Tuple
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 import json
+import math
+import collections
 
 TECH_SKILLS = [
     "react", "angular", "vue", "node", "python", "java", "c#", "cpp", "go", "rust",
@@ -11,7 +11,7 @@ TECH_SKILLS = [
 
 class SkillMatcher:
     def __init__(self):
-        self.vectorizer = TfidfVectorizer(stop_words='english')
+        pass
         
     def is_tech_skill(self, skill_name: str) -> bool:
         """Determines if a skill is technology-related requiring project verification."""
@@ -90,21 +90,30 @@ class SkillMatcher:
         candidates = [candidates[i] for i in valid_indices]
         
         # 2. Add query to fit (simple approach)
-        all_docs = docs + [query]
+        def text_to_vec(text):
+            words = text.lower().replace(',', ' ').split()
+            # Simple stop words removal
+            stopwords = {'and', 'or', 'the', 'a', 'in', 'of', 'for', 'with', 'to'}
+            words = [w for w in words if w not in stopwords]
+            return collections.Counter(words)
+
+        def cosine_sim(vec1, vec2):
+            intersection = set(vec1.keys()) & set(vec2.keys())
+            numerator = sum([vec1[x] * vec2[x] for x in intersection])
+            sum1 = sum([vec1[x] ** 2 for x in list(vec1.keys())])
+            sum2 = sum([vec2[x] ** 2 for x in list(vec2.keys())])
+            denominator = math.sqrt(sum1) * math.sqrt(sum2)
+            if not denominator:
+                return 0.0
+            return float(numerator) / denominator
+
+        query_vec = text_to_vec(query)
         
-        # 3. TF-IDF Vectorization
-        tfidf_matrix = self.vectorizer.fit_transform(all_docs)
-        
-        # 4. Calculate Cosine Similarity
-        # Query is the last vector
-        query_vec = tfidf_matrix[-1]
-        candidate_vecs = tfidf_matrix[:-1]
-        
-        cosine_similarities = cosine_similarity(query_vec, candidate_vecs).flatten()
-        
-        # 5. Rank and Filter
+        # 3. Calculate Cosine Similarity & Rank
         results = []
-        for i, score in enumerate(cosine_similarities):
+        for i, doc in enumerate(docs):
+            doc_vec = text_to_vec(doc)
+            score = cosine_sim(query_vec, doc_vec)
             if score > 0.05: # Lowered threshold slightly for better discovery
                 user = candidates[i]
                 

@@ -52,7 +52,8 @@ async def lifespan(app: FastAPI):
         logger.error(f"Seed data error (non-fatal): {e}")
     yield
 
-app = FastAPI(title="Skill Swap AI Platform", lifespan=lifespan)
+ROOT_PATH = os.getenv("ROOT_PATH", "")
+app = FastAPI(title="Skill Swap AI Platform", lifespan=lifespan, root_path=ROOT_PATH)
 
 app.add_middleware(
     CORSMiddleware,
@@ -498,7 +499,7 @@ def get_learning_path(skill: str):
 # ENHANCED SKILL VERIFICATION ENDPOINTS
 # ============================================
 
-@app.get("/api/verify/classify-skill")
+@app.get("/verify/classify-skill")
 def classify_skill(skill: str):
     """
     Classify skill as programming language or domain
@@ -524,7 +525,7 @@ def classify_skill(skill: str):
             "language": None
         }
 
-@app.get("/api/verify/coding-problems")
+@app.get("/verify/coding-problems")
 def get_coding_problems(language: str):
     """
     Generate 2 coding problems (1 Easy, 1 Medium) for the given language
@@ -561,7 +562,7 @@ class CodeExecutionRequest(BaseModel):
     problem_id: str
     run_mode: str = "test"  # "test" or "submit"
 
-@app.post("/api/verify/execute-code")
+@app.post("/verify/execute-code")
 async def execute_code(request: CodeExecutionRequest):
     """
     Execute submitted code against test cases.
@@ -659,7 +660,7 @@ class CodingVerificationSubmission(BaseModel):
     language: str
     problem_results: List[Dict]  # [{"problem_id": "...", "passed": true/false}]
 
-@app.post("/api/verify/coding-submit")
+@app.post("/verify/coding-submit")
 def submit_coding_verification(
     submission: CodingVerificationSubmission,
     session_db: Session = Depends(get_session),
@@ -713,7 +714,7 @@ class MCQVerificationRequest(BaseModel):
     skill: str
     num_questions: int = 10
 
-@app.post("/api/verify/mcq-questions")
+@app.post("/verify/mcq-questions")
 def get_mcq_questions(request: MCQVerificationRequest):
     """
     Generate MCQ questions for a domain
@@ -727,7 +728,7 @@ class MCQSubmission(BaseModel):
     answers: List[str]  # User's answers
     questions: List[Dict]  # Original questions with correct answers
 
-@app.post("/api/verify/mcq-submit")
+@app.post("/verify/mcq-submit")
 def submit_mcq_verification(
     submission: MCQSubmission,
     session_db: Session = Depends(get_session),

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { API_URL } from '../services/api'
 
 /* ═══════════════════════════════════════════════════════════
    RIPPLE HOOK
@@ -89,7 +90,7 @@ export default function Login({ setToken }) {
         params.append('username', username)
         params.append('password', password)
         try {
-            const res = await axios.post('/api/token', params, {
+            const res = await axios.post(`${API_URL}/token`, params, {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             })
             const token = res.data.access_token

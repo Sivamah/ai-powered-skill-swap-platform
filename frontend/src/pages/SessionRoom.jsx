@@ -16,7 +16,7 @@ export default function SessionRoom({ token }) {
 
     useEffect(() => {
         // Fetch session details
-        axios.get("/api/my_sessions", { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${API_URL}/my_sessions`, { headers: { Authorization: `Bearer ${token}` } })
             .then(res => {
                 const s = res.data.find(s => s.id === parseInt(id));
                 setSession(s);
