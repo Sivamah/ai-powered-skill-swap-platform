@@ -26,6 +26,8 @@ const CodingVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) 
     const [executionError, setExecutionError] = useState(null);
     const [problemResults, setProblemResults] = useState([]);
     const [timeLeft, setTimeLeft] = useState(1200); // 20 minutes
+    const [fontSize, setFontSize] = useState(14);
+    const [consoleCollapsed, setConsoleCollapsed] = useState(false);
 
     const fetchProblems = async () => {
         if (!skill) return; // Guard: don't fetch if skill is null/undefined
@@ -238,13 +240,13 @@ const CodingVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) 
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4 animate-fade-in text-white overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-xl p-2 md:p-4 animate-fade-in text-white overflow-hidden">
 
             {/* Background Effects */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-            <div className="w-full max-w-6xl h-[90vh] bg-[#0f172a] rounded-xl border border-white/10 shadow-2xl flex flex-col relative overflow-hidden">
+            <div className="w-full max-w-7xl h-[95vh] bg-[#0f172a] rounded-xl border border-white/10 shadow-2xl flex flex-col relative overflow-hidden">
 
                 {/* Header */}
                 <div className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#0f172a]/50 backdrop-blur-md z-10">
@@ -264,6 +266,25 @@ const CodingVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) 
                                     {formatTime(timeLeft)}
                                 </span>
                             </div>
+                        </div>
+                    )}
+
+                    {/* Font size selector */}
+                    {(step === 1 || step === 2) && (
+                        <div className="flex items-center gap-1 bg-black/20 px-2 py-1 rounded-lg border border-white/5">
+                            <span className="text-slate-500 text-xs mr-1">Font</span>
+                            {[12, 14, 16].map(size => (
+                                <button
+                                    key={size}
+                                    onClick={() => setFontSize(size)}
+                                    className={`px-2 py-0.5 rounded text-xs font-mono transition-colors ${fontSize === size
+                                        ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                                        : 'text-slate-500 hover:text-slate-300'
+                                        }`}
+                                >
+                                    {size}
+                                </button>
+                            ))}
                         </div>
                     )}
 
@@ -378,7 +399,7 @@ const CodingVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) 
 
                                 {/* Right: Code Editor & Console */}
                                 <div className="col-span-8 flex flex-col h-full bg-[#0f172a]">
-                                    <div className="flex-1 relative">
+                                    <div className="flex-1 relative overflow-hidden">
                                         <Suspense fallback={<EditorFallback />}>
                                             <Editor
                                                 height="100%"
@@ -389,21 +410,39 @@ const CodingVerificationModal = ({ isOpen, onClose, skill, onVerified, token }) 
                                                 theme="vs-dark"
                                                 options={{
                                                     minimap: { enabled: false },
-                                                    fontSize: 14,
+                                                    fontSize: fontSize,
                                                     fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                                                    fontLigatures: true,
                                                     scrollBeyondLastLine: false,
-                                                    padding: { top: 20 },
+                                                    padding: { top: 16, bottom: 16 },
+                                                    lineNumbersMinChars: 3,
+                                                    renderLineHighlight: 'all',
+                                                    cursorBlinking: 'smooth',
+                                                    wordWrap: 'on',
                                                 }}
                                             />
                                         </Suspense>
                                     </div>
 
                                     {/* Console / Output Area */}
-                                    <div className="h-64 bg-[#111827] border-t border-white/5 flex flex-col">
+                                    <div className={`${consoleCollapsed ? 'h-10' : 'h-52'
+                                        } bg-[#111827] border-t border-white/5 flex flex-col transition-all duration-200`}>
                                         {/* Console Header */}
                                         <div className="h-10 border-b border-white/5 flex items-center justify-between px-4 bg-black/20">
                                             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Console</span>
-                                            <div className="flex gap-2">
+                                            <div className="flex gap-2 items-center">
+                                                <button
+                                                    onClick={() => setConsoleCollapsed(prev => !prev)}
+                                                    className="px-2 py-1 rounded text-slate-500 hover:text-slate-300 transition-colors"
+                                                    title={consoleCollapsed ? 'Expand console' : 'Collapse console'}
+                                                >
+                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        {consoleCollapsed
+                                                            ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                                            : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                        }
+                                                    </svg>
+                                                </button>
                                                 <button
                                                     onClick={handleRunCode}
                                                     disabled={loading}

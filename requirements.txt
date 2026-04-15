@@ -5,3 +5,5 @@ python-jose[cryptography]==3.3.0
 passlib[argon2]==1.7.4
 python-multipart==0.0.12
 requests==2.32.3
+mangum==0.17.0
+psycopg2-binary==2.9.9

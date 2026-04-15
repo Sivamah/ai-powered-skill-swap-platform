@@ -471,7 +471,7 @@ export default function Login({ setToken }) {
                             </button>
                         </form>
 
-                        <div className="lp-divider">or</div>
+                        <div className="lp-divider">account</div>
 
                         <div className="lp-foot">
                             No account yet?{' '}

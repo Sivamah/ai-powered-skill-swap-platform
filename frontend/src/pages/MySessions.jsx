@@ -211,8 +211,8 @@ export default function MySessions({ token }) {
             {/* Toast Notification */}
             {actionMessage.text && (
                 <div className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl border text-sm font-medium animate-slide-up ${actionMessage.type === 'success'
-                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                        : 'bg-red-500/10 border-red-500/30 text-red-400'
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                    : 'bg-red-500/10 border-red-500/30 text-red-400'
                     }`}>
                     {actionMessage.type === 'success' ? '✅' : '❌'} {actionMessage.text}
                     <button onClick={() => setActionMessage({ type: '', text: '' })} className="ml-2 opacity-60 hover:opacity-100">×</button>
@@ -252,10 +252,38 @@ export default function MySessions({ token }) {
                                         </div>
 
                                         <div className="flex gap-3">
-                                            <a href={s.meet_link || "#"} target="_blank" rel="noreferrer" className="flex-1 btn-sessions py-2 text-sm flex items-center justify-center gap-2">
-                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                                                Launch
-                                            </a>
+                                            {/* ── Google Meet Launch Button ── */}
+                                            {s.meet_link && !s.meet_link.includes('/sim-') ? (
+                                                <a
+                                                    href={s.meet_link}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="flex-1 btn-sessions py-2 text-sm flex items-center justify-center gap-2"
+                                                    title="Join Google Meet session"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                                    Join Meet
+                                                </a>
+                                            ) : s.meet_link && s.meet_link.includes('/sim-') ? (
+                                                <a
+                                                    href={s.meet_link}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="flex-1 py-2 text-sm flex items-center justify-center gap-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 transition-colors"
+                                                    title="Demo Meet link — replace with real Google Meet in production"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                                    Join (Demo)
+                                                </a>
+                                            ) : (
+                                                <span
+                                                    className="flex-1 py-2 text-sm flex items-center justify-center gap-2 rounded-xl bg-white/[0.03] border border-white/5 text-slate-600 cursor-not-allowed select-none"
+                                                    title="Meet link will appear once the teacher confirms the session"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                    Awaiting Link
+                                                </span>
+                                            )}
                                             <Link to={`/session/${s.id}`} className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-colors">
                                                 Details
                                             </Link>
@@ -269,6 +297,7 @@ export default function MySessions({ token }) {
                                                 </button>
                                             )}
                                         </div>
+
                                     </div>
                                 ))}
                             </div>

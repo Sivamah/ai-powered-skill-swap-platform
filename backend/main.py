@@ -1,4 +1,5 @@
 from typing import List, Optional, Dict
+import secrets
 import json
 import logging
 import os
@@ -16,6 +17,7 @@ from pydantic import BaseModel, validator
 from database import create_db_and_tables, get_session
 from models import User, UserCreate, UserRead, UserUpdate, Session as DbSession, SessionBase, Transaction, Review, ReviewCreate, AuditLog, LearningPath, ProjectVerification, Certificate
 from auth import get_password_hash, verify_password, create_access_token, get_current_user
+from google_auth import verify_google_token
 from ai_engine import SkillMatcher
 from seed_data import seed_data
 from quiz_engine import QuizGenerator
@@ -55,10 +57,24 @@ async def lifespan(app: FastAPI):
 ROOT_PATH = os.getenv("ROOT_PATH", "")
 app = FastAPI(title="Skill Swap AI Platform", lifespan=lifespan, root_path=ROOT_PATH)
 
+# ── CORS Configuration ──────────────────────────────────────────────────────
+# When ALLOWED_ORIGINS is set (comma-separated list), restrict to those
+# origins and allow credentials (cookies/auth headers).
+# When not set (e.g. same-domain Vercel deployment), allow all origins without
+# credentials — JWT Bearer tokens via Authorization header still work fine since
+# the Authorization header is NOT a CORS credential.
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "").strip()
+if _raw_origins:
+    _allow_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+    _allow_credentials = True
+else:
+    _allow_origins = ["*"]
+    _allow_credentials = False
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:4173").split(","),
-    allow_credentials=True,
+    allow_origins=_allow_origins,
+    allow_credentials=_allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -111,6 +127,63 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     except Exception as e:
         logger.error(f"LOGIN CRITICAL ERROR: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Login Failed: {str(e)}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GOOGLE OAUTH ENDPOINT
+# ─────────────────────────────────────────────────────────────────────────────
+class GoogleAuthRequest(BaseModel):
+    credential: str  # The Google ID token returned by GIS
+
+
+@app.post("/auth/google")
+async def google_auth(
+    body: GoogleAuthRequest,
+    session: Session = Depends(get_session)
+):
+    """
+    Verify a Google ID token, find-or-create the user, and return our JWT.
+    Frontend: POST /auth/google  { credential: '<google id token>' }
+    """
+    try:
+        ginfo = verify_google_token(body.credential)
+    except Exception as exc:
+        logger.warning(f"Google token verification failed: {exc}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Google authentication failed: {exc}",
+        )
+
+    email: str = ginfo["email"]
+
+    # Find or create
+    user = session.exec(select(User).where(User.email == email)).first()
+    if not user:
+        # Create a new account using Google profile data
+        random_password = secrets.token_hex(32)  # User will never use this
+        user = User(
+            name=ginfo["name"],
+            email=email,
+            password_hash=get_password_hash(random_password),
+            profile_photo_url=ginfo.get("picture"),
+        )
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        log_audit(session, "GOOGLE_REGISTER", f"New user via Google OAuth: {email}", user.id)
+        logger.info(f"New user created via Google OAuth: {email}")
+    else:
+        # Update profile photo if we have one and the user has none
+        if ginfo.get("picture") and not user.profile_photo_url:
+            user.profile_photo_url = ginfo["picture"]
+            session.add(user)
+            session.commit()
+        log_audit(session, "GOOGLE_LOGIN", f"User logged in via Google OAuth: {email}", user.id)
+        logger.info(f"User logged in via Google OAuth: {email}")
+
+    access_token = create_access_token(data={"sub": user.email})
+    return {"access_token": access_token, "token_type": "bearer"}
+
 
 @app.post("/register", response_model=UserRead)
 def register_user(user: UserCreate, session: Session = Depends(get_session)):

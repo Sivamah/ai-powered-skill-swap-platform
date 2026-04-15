@@ -1,10 +1,14 @@
 import axios from 'axios';
 
 /**
- * Base API URL — sourced from Vite env. Falls back to localhost:8000.
- * Defined once here to avoid duplication across all components.
+ * Base API URL — sourced from Vite env or relative /api path.
+ *
+ * - Local dev : Vite proxy rewrites /api/* → http://localhost:8000/* (see vite.config.js)
+ * - Production: Vercel routes /api/* → api/index.py serverless function
+ *
+ * Do NOT hard-code localhost here; it would break the Vercel deployment.
  */
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+export const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 /**
  * Returns Axios config with Authorization header.
